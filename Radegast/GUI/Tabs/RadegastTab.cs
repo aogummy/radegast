@@ -141,7 +141,7 @@ namespace Radegast
             else
             {
                 Button.Image = null;
-                Button.ForeColor = Color.Blue;
+                Button.ForeColor = ThemeColors.LinkColor(Instance);
             }
 
             PartiallyHighlighted = true;
@@ -166,7 +166,7 @@ namespace Radegast
             if (!Detached)
             {
                 Button.Image = Properties.Resources.arrow_forward_16;
-                Button.ForeColor = Color.Red;
+                Button.ForeColor = ThemeColors.IsDark(Instance) ? Color.FromArgb(255, 120, 120) : Color.Red;
             }
 
             Highlighted = true;
@@ -180,7 +180,7 @@ namespace Radegast
             if (!Detached)
             {
                 Button.Image = null;
-                Button.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+                Button.ForeColor = ThemeColors.ControlText(Instance);
             }
 
             Highlighted = PartiallyHighlighted = false;

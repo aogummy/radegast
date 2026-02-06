@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using OpenMetaverse;
 
@@ -302,7 +303,14 @@ namespace Radegast
         {
             WriteDebug("Menu_Opening: {0} {1}", sender, e.Cancel);
 
-            if (RadegastInstanceForms.Instance.GlobalSettings["theme_compatibility_mode"])
+            var instance = RadegastInstanceForms.Instance;
+            if (instance != null && ThemeColors.IsDark(instance))
+            {
+                RenderMode = ToolStripRenderMode.Professional;
+                BackColor = ThemeColors.ControlBack(instance);
+                ForeColor = ThemeColors.ControlText(instance);
+            }
+            else if (instance != null && instance.GlobalSettings["theme_compatibility_mode"].AsBoolean())
             {
                 RenderMode = ToolStripRenderMode.System;
             }
@@ -473,7 +481,14 @@ namespace Radegast
 
         private void Rad_Item_Opening(object sender, EventArgs e)
         {
-            if (RadegastInstanceForms.Instance.GlobalSettings["theme_compatibility_mode"])
+            var instance = RadegastInstanceForms.Instance;
+            if (instance != null && ThemeColors.IsDark(instance))
+            {
+                RenderMode = ToolStripRenderMode.Professional;
+                BackColor = ThemeColors.ControlBack(instance);
+                ForeColor = ThemeColors.ControlText(instance);
+            }
+            else if (instance != null && instance.GlobalSettings["theme_compatibility_mode"].AsBoolean())
             {
                 RenderMode = ToolStripRenderMode.System;
             }

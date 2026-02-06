@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Radegast Metaverse Client
  * Copyright(c) 2009-2014, Radegast Development Team
  * Copyright(c) 2016-20253, Sjofn, LLC
@@ -117,6 +117,8 @@ namespace Radegast
             if (!s.ContainsKey("disable_chat_im_log")) s["disable_chat_im_log"] = false;
 
             if (!s.ContainsKey("disable_look_at")) s["disable_look_at"] = false;
+
+            if (!s.ContainsKey("dark_mode")) s["dark_mode"] = OSD.FromBoolean(false);
 
             if (!s.ContainsKey("confirm_exit")) s["confirm_exit"] = false;
 
@@ -355,6 +357,12 @@ namespace Radegast
                 settings["theme_compatibility_mode"] = cbThemeCompatibilityMode.Checked;
             };
 
+            cbDarkMode.Checked = settings["dark_mode"].AsBoolean();
+            cbDarkMode.CheckedChanged += (sender, e) =>
+            {
+                settings["dark_mode"] = OSD.FromBoolean(cbDarkMode.Checked);
+            };
+
             cbTaskBarHighLight.Checked = settings["taskbar_highlight"];
             cbTaskBarHighLight.CheckedChanged += (sender, e) =>
             {
@@ -419,12 +427,12 @@ namespace Radegast
             {
                 if (UUID.TryParse(txtMentionMeSoundUUID.Text, out UUID newMentionMeSoundUUID))
                 {
-                    txtMentionMeSoundUUID.ForeColor = DefaultForeColor;
+                    txtMentionMeSoundUUID.ForeColor = ThemeColors.IsDark(Instance) ? ThemeColors.WindowText(Instance) : DefaultForeColor;
                     settings["mention_me_sound_uuid"] = newMentionMeSoundUUID;
                 }
                 else
                 {
-                    txtMentionMeSoundUUID.ForeColor = Color.Red;
+                    txtMentionMeSoundUUID.ForeColor = ThemeColors.IsDark(Instance) ? Color.FromArgb(255, 120, 120) : Color.Red;
                     settings["mention_me_sound_uuid"] = UISounds.ChatMention;
                 }
             };

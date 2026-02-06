@@ -169,6 +169,8 @@ namespace Radegast
 
         private void frmMain_Disposed(object sender, EventArgs e)
         {
+            if (instance?.GlobalSettings != null)
+                instance.GlobalSettings.OnSettingChanged -= GlobalSettings_OnSettingChanged;
             if (NetCom != null)
             {
                 NetCom.NetcomSync = null;
@@ -672,11 +674,25 @@ namespace Radegast
                 }
             }
 
-            if (!instance.GlobalSettings["theme_compatibility_mode"] && instance.PlainColors)
+            ApplyNotificationPanelTheme();
+            ThemeColors.ApplyTooltipTheme(this, instance);
+            instance.GlobalSettings.OnSettingChanged += GlobalSettings_OnSettingChanged;
+        }
+
+        private void GlobalSettings_OnSettingChanged(object sender, SettingsEventArgs e)
+        {
+            if (e.Key == "dark_mode")
             {
-                pnlDialog.BackColor = Color.FromArgb(120, 220, 255);
+                ApplyNotificationPanelTheme();
+                ThemeColors.ApplyTooltipTheme(this, instance);
             }
         }
+
+        private void ApplyNotificationPanelTheme()
+        {
+            pnlDialog.BackColor = ThemeColors.NotificationBack(instance);
+        }
+
         #endregion
 
         #region Public methods
@@ -992,6 +1008,9 @@ namespace Radegast
             }
 
             notificationFlowPanel.Controls.Add(control);
+
+            // Apply dark/light theme so llDialog-style notifications (object offer, script dialog, etc.) match the UI
+            ThemeColors.ApplyThemeRecursive(control, instance);
 
             // Update size and position to fit new content
             ResizeNotificationByControl(control);
