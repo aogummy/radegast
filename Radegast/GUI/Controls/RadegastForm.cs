@@ -211,6 +211,40 @@ namespace Radegast
             if (AutoSavePosition)
                 RestoreSavedPosition();
             InitTimer();
+            if (Instance != null)
+            {
+                ApplyThemeToThisForm();
+                Instance.GlobalSettings.OnSettingChanged += GlobalSettings_OnSettingChanged;
+            }
+        }
+
+        private void GlobalSettings_OnSettingChanged(object sender, SettingsEventArgs e)
+        {
+            if (e.Key == "dark_mode" && Instance != null)
+            {
+                try
+                {
+                    if (IsHandleCreated && !IsDisposed)
+                        BeginInvoke(new Action(ApplyThemeToThisForm));
+                }
+                catch { }
+            }
+        }
+
+        private void ApplyThemeToThisForm()
+        {
+            if (Instance == null || IsDisposed) return;
+            if (ThemeColors.IsDark(Instance))
+            {
+                BackColor = ThemeColors.ControlBack(Instance);
+                ForeColor = ThemeColors.ControlText(Instance);
+            }
+            else
+            {
+                BackColor = SystemColors.Control;
+                ForeColor = SystemColors.ControlText;
+            }
+            ThemeColors.ApplyThemeRecursive(this, Instance);
         }
 
         protected override void OnMove(EventArgs e)

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Radegast Metaverse Client
  * Copyright(c) 2009-2014, Radegast Development Team
  * Copyright(c) 2016-2025, Sjofn, LLC
@@ -84,6 +84,8 @@ namespace Radegast
 
             lvwObjects.ListViewItemSorter = new SorterClass(instance.Client.Self.AgentID);
             cbChatType.SelectedIndex = 1;
+
+            ApplyChatTheme();
 
             GUI.GuiHelpers.ApplyGuiFixes(this);
 
@@ -194,6 +196,8 @@ namespace Radegast
 
         private void GlobalSettings_OnSettingChanged(object sender, SettingsEventArgs e)
         {
+            if (e.Key == "dark_mode")
+                ApplyChatTheme();
         }
 
         public List<UUID> GetAvatarList()
@@ -438,6 +442,21 @@ namespace Radegast
         private void MainForm_Load(object sender, EventArgs e)
         {
             tabConsole = instance.TabConsole;
+            ApplyChatTheme();
+        }
+
+        private void ApplyChatTheme()
+        {
+            if (ThemeColors.IsDark(instance))
+            {
+                rtbChat.BackColor = ThemeColors.WindowBack(instance);
+                rtbChat.ForeColor = ThemeColors.WindowText(instance);
+            }
+            else
+            {
+                rtbChat.BackColor = System.Drawing.SystemColors.Window;
+                rtbChat.ForeColor = System.Drawing.SystemColors.WindowText;
+            }
         }
 
         private void NetComClientLoginStatus(object sender, LoginProgressEventArgs e)
@@ -580,6 +599,7 @@ namespace Radegast
                             msg = "...";
                         }
                     }
+
                 }
                 #endregion
 

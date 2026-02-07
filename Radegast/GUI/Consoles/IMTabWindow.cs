@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using OpenMetaverse;
 
@@ -49,7 +50,23 @@ namespace Radegast
 
             AddNetcomEvents();
 
+            ApplyIMTheme();
+
             GUI.GuiHelpers.ApplyGuiFixes(this);
+        }
+
+        private void ApplyIMTheme()
+        {
+            if (ThemeColors.IsDark(instance))
+            {
+                rtbIMText.BackColor = ThemeColors.WindowBack(instance);
+                rtbIMText.ForeColor = ThemeColors.WindowText(instance);
+            }
+            else
+            {
+                rtbIMText.BackColor = System.Drawing.SystemColors.Window;
+                rtbIMText.ForeColor = System.Drawing.SystemColors.WindowText;
+            }
         }
 
         private void IMTabWindow_Disposed(object sender, EventArgs e)
@@ -83,6 +100,8 @@ namespace Radegast
 
         private void GlobalSettings_OnSettingChanged(object sender, SettingsEventArgs e)
         {
+            if (e.Key == "dark_mode")
+                ApplyIMTheme();
         }
 
         private void NetComClientLoginStatus(object sender, LoginProgressEventArgs e)

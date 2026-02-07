@@ -72,6 +72,7 @@ namespace Radegast
             this.lblThemeMode = new System.Windows.Forms.Label();
             this.cmbThemeMode = new System.Windows.Forms.ComboBox();
             this.cbThemeCompatibilityMode = new System.Windows.Forms.CheckBox();
+            this.cbDarkMode = new System.Windows.Forms.CheckBox();
             this.cbConfirmExit = new System.Windows.Forms.CheckBox();
             this.txtResolveURITime = new System.Windows.Forms.TextBox();
             this.cbResolveURIs = new System.Windows.Forms.CheckBox();
@@ -281,6 +282,7 @@ namespace Radegast
             this.cbMisc.Controls.Add(this.cmbThemeMode);
             this.cbMisc.Controls.Add(this.cbResolveURIsAsPlaintext);
             this.cbMisc.Controls.Add(this.cbThemeCompatibilityMode);
+            this.cbMisc.Controls.Add(this.cbDarkMode);
             this.cbMisc.Controls.Add(this.cbConfirmExit);
             this.cbMisc.Controls.Add(this.txtResolveURITime);
             this.cbMisc.Controls.Add(this.cbResolveURIs);
@@ -343,6 +345,16 @@ namespace Radegast
             this.cbThemeCompatibilityMode.Text = "Theme Compatibility Mode";
             this.cbThemeCompatibilityMode.UseVisualStyleBackColor = true;
             this.cbThemeCompatibilityMode.CheckedChanged += new System.EventHandler(this.cbThemeCompatibilityMode_CheckedChanged);
+            // 
+            // cbDarkMode
+            // 
+            this.cbDarkMode.AutoSize = true;
+            this.cbDarkMode.Location = new System.Drawing.Point(6, 339);
+            this.cbDarkMode.Name = "cbDarkMode";
+            this.cbDarkMode.Size = new System.Drawing.Size(74, 17);
+            this.cbDarkMode.TabIndex = 24;
+            this.cbDarkMode.Text = "Dark mode";
+            this.cbDarkMode.UseVisualStyleBackColor = true;
             // 
             // cbConfirmExit
             // 
@@ -1480,6 +1492,7 @@ namespace Radegast
         public System.Windows.Forms.CheckBox cbResolveURIs;
         private System.Windows.Forms.CheckBox cbConfirmExit;
         private System.Windows.Forms.CheckBox cbThemeCompatibilityMode;
+        private System.Windows.Forms.CheckBox cbDarkMode;
         private System.Windows.Forms.TabPage tbpChat;
         private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.CheckBox cbxItalic;

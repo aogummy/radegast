@@ -165,10 +165,11 @@ namespace Radegast
 
             invTree.TreeViewNodeSorter = sorter;
 
+            ApplyInventoryTreeTheme();
+            instance.GlobalSettings.OnSettingChanged += GlobalSettings_OnSettingChanged;
+
             if (instance.MonoRuntime)
             {
-                invTree.BackColor = Color.FromKnownColor(KnownColor.Window);
-                invTree.ForeColor = invTree.LineColor = Color.FromKnownColor(KnownColor.WindowText);
                 InventoryFolder f = new InventoryFolder(UUID.Random())
                 {
                     Name = "",
@@ -236,6 +237,26 @@ namespace Radegast
 
             try { Client.Appearance.AppearanceSet -= Appearance_AppearanceSet; } catch (Exception ex) { Logger.Debug("Failed to unsubscribe AppearanceSet: " + ex.Message, Client); }
             try { Client.Objects.ObjectUpdate -= Objects_AttachmentUpdate; } catch (Exception ex) { Logger.Debug("Failed to unsubscribe Objects.ObjectUpdate: " + ex.Message, Client); }
+        }
+
+        private void ApplyInventoryTreeTheme()
+        {
+            if (ThemeColors.IsDark(instance))
+            {
+                invTree.BackColor = ThemeColors.WindowBack(instance);
+                invTree.ForeColor = invTree.LineColor = ThemeColors.WindowText(instance);
+            }
+            else
+            {
+                invTree.BackColor = Color.FromKnownColor(KnownColor.Window);
+                invTree.ForeColor = invTree.LineColor = Color.FromKnownColor(KnownColor.WindowText);
+            }
+        }
+
+        private void GlobalSettings_OnSettingChanged(object sender, SettingsEventArgs e)
+        {
+            if (e.Key == "dark_mode")
+                RunOnUi(ApplyInventoryTreeTheme);
         }
 
         /// <summary>
@@ -335,6 +356,8 @@ namespace Radegast
             // Stop timers and unsubscribe events that touch controls on the UI thread
             try
             {
+                if (instance?.GlobalSettings != null)
+                    instance.GlobalSettings.OnSettingChanged -= GlobalSettings_OnSettingChanged;
                 RunOnUi(() =>
                 {
                     try

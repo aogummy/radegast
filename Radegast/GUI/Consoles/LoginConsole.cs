@@ -129,6 +129,20 @@ namespace Radegast
                 pnlSplash.BackgroundImage = e.Value.AsBoolean() 
                     ? null : Properties.Resources.radegast_main_screen2;
             }
+            else if (e.Key == "dark_mode")
+            {
+                ApplyLoginPanelTheme();
+            }
+        }
+
+        private void ApplyLoginPanelTheme()
+        {
+            if (ThemeColors.IsDark(instance))
+                panel1.BackColor = ThemeColors.ControlBack(instance);
+            else if (!instance.GlobalSettings["theme_compatibility_mode"].AsBoolean() && instance.PlainColors)
+                panel1.BackColor = Color.FromArgb(210, 210, 225);
+            else
+                panel1.BackColor = System.Drawing.SystemColors.Control;
         }
 
         private void SaveConfig()
@@ -350,22 +364,22 @@ namespace Radegast
             {
                 case LoginStatus.ConnectingToLogin:
                     lblLoginStatus.Text = "Connecting to login server...";
-                    lblLoginStatus.ForeColor = Color.Black;
+                    lblLoginStatus.ForeColor = ThemeColors.IsDark(instance) ? ThemeColors.ControlText(instance) : Color.Black;
                     break;
 
                 case LoginStatus.ConnectingToSim:
                     lblLoginStatus.Text = "Connecting to region...";
-                    lblLoginStatus.ForeColor = Color.Black;
+                    lblLoginStatus.ForeColor = ThemeColors.IsDark(instance) ? ThemeColors.ControlText(instance) : Color.Black;
                     break;
 
                 case LoginStatus.Redirecting:
                     lblLoginStatus.Text = "Redirecting...";
-                    lblLoginStatus.ForeColor = Color.Black;
+                    lblLoginStatus.ForeColor = ThemeColors.IsDark(instance) ? ThemeColors.ControlText(instance) : Color.Black;
                     break;
 
                 case LoginStatus.ReadingResponse:
                     lblLoginStatus.Text = "Reading response...";
-                    lblLoginStatus.ForeColor = Color.Black;
+                    lblLoginStatus.ForeColor = ThemeColors.IsDark(instance) ? ThemeColors.ControlText(instance) : Color.Black;
                     break;
 
                 case LoginStatus.Success:
@@ -426,7 +440,7 @@ namespace Radegast
             btnLogin.Enabled = false;
 
             lblLoginStatus.Text = "Logging out...";
-            lblLoginStatus.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+            lblLoginStatus.ForeColor = ThemeColors.ControlText(instance);
 
             proLogin.Visible = true;
         }
@@ -434,7 +448,7 @@ namespace Radegast
         private void NetComClientLoggingIn(object sender, OverrideEventArgs e)
         {
             lblLoginStatus.Text = "Logging in...";
-            lblLoginStatus.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+            lblLoginStatus.ForeColor = ThemeColors.ControlText(instance);
 
             proLogin.Visible = true;
             pnlLoggingIn.Visible = true;

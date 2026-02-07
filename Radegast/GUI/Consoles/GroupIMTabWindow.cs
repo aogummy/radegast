@@ -60,7 +60,23 @@ namespace Radegast
             }
             Load += GroupIMTabWindow_Load;
 
+            ApplyIMTheme();
+
             GUI.GuiHelpers.ApplyGuiFixes(this);
+        }
+
+        private void ApplyIMTheme()
+        {
+            if (ThemeColors.IsDark(instance))
+            {
+                rtbIMText.BackColor = ThemeColors.WindowBack(instance);
+                rtbIMText.ForeColor = ThemeColors.WindowText(instance);
+            }
+            else
+            {
+                rtbIMText.BackColor = SystemColors.Window;
+                rtbIMText.ForeColor = SystemColors.WindowText;
+            }
         }
 
         private void RegisterClientEvents(GridClient client)
@@ -113,6 +129,8 @@ namespace Radegast
         {
             if (e.Key == "display_name_mode")
                 UpdateParticipantList();
+            else if (e.Key == "dark_mode")
+                ApplyIMTheme();
         }
 
         private void Netcom_Disconnected(object sender, DisconnectedEventArgs e)
