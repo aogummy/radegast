@@ -578,6 +578,7 @@ namespace Radegast
                         type = ChatType.Normal;
                     }
 
+                    
                                         // Route channel-0 chat/emote to RLV redirect channel when @redirchat / @rediremote is active
                     if (ch == 0)
                     {

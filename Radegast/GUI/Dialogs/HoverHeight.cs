@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Radegast Metaverse Client
  * Copyright(c) 2009-2014, Radegast Development Team
  * Copyright(c) 2016-2025, Sjofn, LLC
@@ -102,6 +102,11 @@ namespace Radegast
             txtHoverHeight.DataBindings.Add(textBinding);
 
             RealHoverHeight = initialHoverHeight;
+            Load += (s, e) =>
+            {
+                if (RadegastInstanceForms.Initialized)
+                    RadegastInstanceForms.Instance.ThemeManager?.ApplyToForm(this);
+            };
         }
 
         private void textBinding_Parse(object sender, ConvertEventArgs e)

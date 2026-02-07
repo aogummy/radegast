@@ -231,6 +231,8 @@ namespace Radegast
 
         private void PrintIM(DateTime timestamp, string fromName, UUID fromID, string message, bool isNewMessage)
         {
+            var defaultFonts = SettingsForms.GetDefaultFontSettings(instance.ThemeManager != null && instance.ThemeManager.IsEffectiveDarkMode);
+
             if (showTimestamps)
             {
                 if(FontSettings.ContainsKey("Timestamp"))
@@ -241,9 +243,16 @@ namespace Radegast
                     TextPrinter.Font = fontSetting.Font;
                     TextPrinter.PrintText(DateTime.Now.ToString("[HH:mm] "));
                 }
+                else if (defaultFonts.TryGetValue("Timestamp", out var tsDef))
+                {
+                    TextPrinter.ForeColor = tsDef.ForeColor;
+                    TextPrinter.BackColor = tsDef.BackColor;
+                    TextPrinter.Font = tsDef.Font;
+                    TextPrinter.PrintText(DateTime.Now.ToString("[HH:mm] "));
+                }
                 else
                 {
-                    TextPrinter.ForeColor = SystemColors.GrayText.ToSKColor();
+                    TextPrinter.ForeColor = System.Drawing.SystemColors.GrayText.ToSKColor();
                     TextPrinter.BackColor = SKColors.Transparent;
                     TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                     TextPrinter.PrintText(DateTime.Now.ToString("[HH:mm] "));
@@ -257,9 +266,15 @@ namespace Radegast
                 TextPrinter.BackColor = fontSetting.BackColor;
                 TextPrinter.Font = fontSetting.Font;
             }
+            else if (defaultFonts.TryGetValue("Name", out var nameDef))
+            {
+                TextPrinter.ForeColor = nameDef.ForeColor;
+                TextPrinter.BackColor = nameDef.BackColor;
+                TextPrinter.Font = nameDef.Font;
+            }
             else
             {
-                TextPrinter.ForeColor = SystemColors.WindowText.ToSKColor();
+                TextPrinter.ForeColor = System.Drawing.SystemColors.WindowText.ToSKColor();
                 TextPrinter.BackColor = SKColors.Transparent;
                 TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
             }
@@ -284,9 +299,15 @@ namespace Radegast
                     TextPrinter.BackColor = fontSetting.BackColor;
                     TextPrinter.Font = fontSetting.Font;
                 }
+                else if (defaultFonts.TryGetValue("Emote", out var emoteDef))
+                {
+                    TextPrinter.ForeColor = emoteDef.ForeColor;
+                    TextPrinter.BackColor = emoteDef.BackColor;
+                    TextPrinter.Font = emoteDef.Font;
+                }
                 else
                 {
-                    TextPrinter.ForeColor = SystemColors.WindowText.ToSKColor();
+                    TextPrinter.ForeColor = System.Drawing.SystemColors.WindowText.ToSKColor();
                     TextPrinter.BackColor = SKColors.Transparent;
                     TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                 }
@@ -304,9 +325,15 @@ namespace Radegast
                         TextPrinter.BackColor = fontSetting.BackColor;
                         TextPrinter.Font = fontSetting.Font;
                     }
+                    else if (defaultFonts.TryGetValue("OutgoingIM", out var outDef))
+                    {
+                        TextPrinter.ForeColor = outDef.ForeColor;
+                        TextPrinter.BackColor = outDef.BackColor;
+                        TextPrinter.Font = outDef.Font;
+                    }
                     else
                     {
-                        TextPrinter.ForeColor = SystemColors.WindowText.ToSKColor();
+                        TextPrinter.ForeColor = System.Drawing.SystemColors.WindowText.ToSKColor();
                         TextPrinter.BackColor = SKColors.Transparent;
                         TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                     }
@@ -320,9 +347,15 @@ namespace Radegast
                         TextPrinter.BackColor = fontSetting.BackColor;
                         TextPrinter.Font = fontSetting.Font;
                     }
+                    else if (defaultFonts.TryGetValue("IncomingIM", out var inDef))
+                    {
+                        TextPrinter.ForeColor = inDef.ForeColor;
+                        TextPrinter.BackColor = inDef.BackColor;
+                        TextPrinter.Font = inDef.Font;
+                    }
                     else
                     {
-                        TextPrinter.ForeColor = SystemColors.WindowText.ToSKColor();
+                        TextPrinter.ForeColor = System.Drawing.SystemColors.WindowText.ToSKColor();
                         TextPrinter.BackColor = SKColors.Transparent;
                         TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                     }

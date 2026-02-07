@@ -53,6 +53,9 @@ namespace Radegast
 
             instance.GlobalSettings.OnSettingChanged += GlobalSettings_OnSettingChanged;
 
+            if (instance.ThemeManager != null)
+                instance.ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
+
             lblVersion.Text = $"{Properties.Resources.RadegastTitle} {Assembly.GetExecutingAssembly().GetName().Version}\n" +
                               $"{RuntimeInformation.FrameworkDescription}";
 
@@ -63,13 +66,38 @@ namespace Radegast
 
         private void MainConsole_Disposed(object sender, EventArgs e)
         {
+            if (instance?.ThemeManager != null)
+                instance.ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
             instance.GlobalSettings.OnSettingChanged -= GlobalSettings_OnSettingChanged;
             RemoveNetcomEvents();
         }
 
+        private void ThemeManager_ThemeChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(ApplyCustomThemeColors));
+                return;
+            }
+            ApplyCustomThemeColors();
+        }
+
+        private void ApplyCustomThemeColors()
+        {
+            if (!instance.GlobalSettings["theme_compatibility_mode"] && instance.PlainColors && !instance.ThemeManager.IsEffectiveDarkMode)
+            {
+                panel1.BackColor = Color.FromArgb(210, 210, 225);
+            }
+            else
+            {
+                panel1.BackColor = SystemColors.Control;
+            }
+        }
+
         private void LoginConsole_Load(object sender, EventArgs e)
         {
-            ApplyLoginPanelTheme();
+            ApplyCustomThemeColors();
 
             cbxLocation.SelectedIndex = 0;
             cbxUsername.SelectedIndexChanged += cbxUsername_SelectedIndexChanged;

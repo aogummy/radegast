@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using OpenMetaverse.StructuredData;
 using OpenMetaverse;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using SkiaSharp;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Radegast
 {
@@ -45,13 +46,30 @@ namespace Radegast
             InitializeConfig();
 
             this.instance.GlobalSettings.OnSettingChanged += OnSettingChanged;
+            if (instance.ThemeManager != null)
+                instance.ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
         public abstract void ReprintAllText();
 
         public virtual void Dispose()
         {
+            if (instance?.ThemeManager != null)
+                instance.ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
             instance.GlobalSettings.OnSettingChanged -= OnSettingChanged;
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, EventArgs e)
+        {
+            var form = instance?.MainForm;
+            if (form == null || form.IsDisposed || !form.IsHandleCreated) return;
+            if (form.InvokeRequired)
+            {
+                form.BeginInvoke(new Action(() => { ReloadFonts(); ReprintAllText(); }));
+                return;
+            }
+            ReloadFonts();
+            ReprintAllText();
         }
 
         private void InitializeConfig()
@@ -61,15 +79,19 @@ namespace Radegast
 
         private void ReloadFonts()
         {
+            bool isDarkMode = instance.ThemeManager != null && instance.ThemeManager.IsEffectiveDarkMode;
+            var currentDefaults = SettingsForms.GetDefaultFontSettings(isDarkMode);
+            var oppositeDefaults = SettingsForms.GetDefaultFontSettings(!isDarkMode);
+
             if (instance.GlobalSettings["chat_fonts"].Type == OSDType.Unknown)
             {
                 try
                 {
-                    instance.GlobalSettings["chat_fonts"] = JsonConvert.SerializeObject(SettingsForms.DefaultFontSettings);
+                    instance.GlobalSettings["chat_fonts"] = JsonConvert.SerializeObject(currentDefaults);
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show("Failed to save default font settings: " + ex.Message);
+                    MessageBox.Show("Failed to save default font settings: " + ex.Message);
                 }
             }
 
@@ -77,18 +99,41 @@ namespace Radegast
             {
                 FontSettings = JsonConvert.DeserializeObject<Dictionary<string, SettingsForms.FontSetting>>(instance.GlobalSettings["chat_fonts"]);
 
-                foreach (var fontSetting in SettingsForms.DefaultFontSettings)
+                foreach (var kv in currentDefaults)
                 {
-                    if (!FontSettings.ContainsKey(fontSetting.Key))
+                    if (!FontSettings.ContainsKey(kv.Key))
                     {
-                        FontSettings.Add(fontSetting.Key, fontSetting.Value);
+                        FontSettings.Add(kv.Key, kv.Value);
+                    }
+                    else if (oppositeDefaults.TryGetValue(kv.Key, out var opp) && FontSettingMatches(FontSettings[kv.Key], opp))
+                    {
+                        FontSettings[kv.Key] = kv.Value;
+                    }
+                    else
+                    {
+                        // Fix corrupted transparent BackColors: ColorTranslator.ToHtml drops alpha,
+                        // so SKColors.Transparent (0,0,0,0) was saved as "#000000" and reloaded as
+                        // opaque black (0,0,0,255). Restore transparency when the default is transparent.
+                        var loaded = FontSettings[kv.Key];
+                        if (kv.Value.BackColor.Alpha == 0
+                            && loaded.BackColor == new SKColor(0, 0, 0, 255))
+                        {
+                            loaded.BackColor = SKColors.Transparent;
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Failed to read chat font settings: " + ex.Message);
+                MessageBox.Show("Failed to read chat font settings: " + ex.Message);
             }
+        }
+
+        private static bool FontSettingMatches(SettingsForms.FontSetting a, SettingsForms.FontSetting b)
+        {
+            if (a == null || b == null) return a == b;
+            if (a.ForeColor != b.ForeColor || a.BackColor != b.BackColor) return false;
+            return (a.Font == null && b.Font == null) || (a.Font != null && b.Font != null && a.Font.Equals(b.Font));
         }
 
         protected virtual void OnSettingChanged(object sender, SettingsEventArgs e)

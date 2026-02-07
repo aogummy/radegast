@@ -107,7 +107,20 @@ namespace Radegast
         public SKColor BackColor
         {
             get => rtb.SelectionBackColor.ToSKColor();
-            set => rtb.SelectionBackColor = value.ToDrawingColor();
+            set
+            {
+                // WinForms RichTextBox doesn't support alpha in SelectionBackColor.
+                // If the color is transparent (alpha == 0), use the RichTextBox's own
+                // BackColor so text background matches the chat frame.
+                if (value.Alpha == 0)
+                {
+                    rtb.SelectionBackColor = rtb.BackColor;
+                }
+                else
+                {
+                    rtb.SelectionBackColor = value.ToDrawingColor();
+                }
+            }
         }
 
         public Font Font

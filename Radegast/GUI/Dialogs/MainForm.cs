@@ -674,17 +674,29 @@ namespace Radegast
                 }
             }
 
-            ApplyNotificationPanelTheme();
-            ThemeColors.ApplyTooltipTheme(this, instance);
-            instance.GlobalSettings.OnSettingChanged += GlobalSettings_OnSettingChanged;
+            ApplyCustomThemeColors();
         }
 
-        private void GlobalSettings_OnSettingChanged(object sender, SettingsEventArgs e)
+        protected override void OnThemeChanged()
         {
-            if (e.Key == "dark_mode")
+            base.OnThemeChanged();
+            ApplyCustomThemeColors();
+        }
+
+        private void ApplyCustomThemeColors()
+        {
+            if (instance.ThemeManager.IsEffectiveDarkMode)
+            {
+                pnlDialog.BackColor = Color.FromArgb(32, 32, 32);
+            }
+            else if (!instance.GlobalSettings["theme_compatibility_mode"] && instance.PlainColors)
             {
                 ApplyNotificationPanelTheme();
                 ThemeColors.ApplyTooltipTheme(this, instance);
+            }
+            else
+            {
+                pnlDialog.BackColor = SystemColors.Control;
             }
         }
 

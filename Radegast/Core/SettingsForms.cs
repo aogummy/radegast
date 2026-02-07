@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Radegast Metaverse Client
  * Copyright(c) 2009-2014, Radegast Development Team
  * Copyright(c) 2016-2025, Sjofn, LLC
@@ -142,6 +142,123 @@ namespace Radegast
             }},
         };
 
+        /// <summary>Default chat font/color settings for dark mode (readable on dark backgrounds).</summary>
+        public static readonly Dictionary<string, FontSetting> DefaultDarkFontSettings = new Dictionary<string, FontSetting>()
+        {
+            {"Normal", new FontSetting {
+                Name = "Normal",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"StatusBlue", new FontSetting {
+                Name = "StatusBlue",
+                ForeColor = SKColors.CornflowerBlue,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"StatusDarkBlue", new FontSetting {
+                Name = "StatusDarkBlue",
+                ForeColor = SKColors.LightSteelBlue,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"LindenChat", new FontSetting {
+                Name = "LindenChat",
+                ForeColor = SKColors.LightGreen,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"ObjectChat", new FontSetting {
+                Name = "ObjectChat",
+                ForeColor = SKColors.Cyan,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"StartupTitle", new FontSetting {
+                Name = "StartupTitle",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = new Font(FontSetting.DefaultFont, FontStyle.Bold),
+            }},
+            {"Alert", new FontSetting {
+                Name = "Alert",
+                ForeColor = SKColors.Salmon,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"Error", new FontSetting {
+                Name = "Error",
+                ForeColor = SKColors.LightCoral,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"OwnerSay", new FontSetting {
+                Name = "OwnerSay",
+                ForeColor = SKColors.Gold,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"Timestamp", new FontSetting {
+                Name = "Timestamp",
+                ForeColor = SKColors.DarkGray,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"Name", new FontSetting {
+                Name = "Name",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"Notification", new FontSetting {
+                Name = "Notification",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"IncomingIM", new FontSetting {
+                Name = "IncomingIM",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"OutgoingIM", new FontSetting {
+                Name = "OutgoingIM",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"Emote", new FontSetting {
+                Name = "Emote",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"Self", new FontSetting {
+                Name = "Self",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"MentionMe", new FontSetting {
+                Name = "MentionMe",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.DarkGoldenrod,
+                Font = FontSetting.DefaultFont,
+            }},
+            {"MentionOthers", new FontSetting {
+                Name = "MentionOthers",
+                ForeColor = SKColors.White,
+                BackColor = SKColors.Transparent,
+                Font = FontSetting.DefaultFont,
+            }},
+        };
+
+        /// <summary>Returns the default font settings for the given theme (light or dark).</summary>
+        public static Dictionary<string, FontSetting> GetDefaultFontSettings(bool isDarkMode)
+            => isDarkMode ? DefaultDarkFontSettings : DefaultFontSettings;
+
         public class FontSetting
         {
             [IgnoreDataMember]
@@ -161,14 +278,18 @@ namespace Radegast
 
             public string ForeColorString
             {
-                get => ColorTranslator.ToHtml(ForeColor.ToDrawingColor());
-                set => ForeColor = ColorTranslator.FromHtml(value).ToSKColor();
+                get => ForeColor.Alpha == 0 ? "Transparent" : ColorTranslator.ToHtml(ForeColor.ToDrawingColor());
+                set => ForeColor = string.Equals(value, "Transparent", StringComparison.OrdinalIgnoreCase)
+                    ? SKColors.Transparent
+                    : ColorTranslator.FromHtml(value).ToSKColor();
             }
 
             public string BackColorString
             {
-                get => ColorTranslator.ToHtml(BackColor.ToDrawingColor());
-                set => BackColor = ColorTranslator.FromHtml(value).ToSKColor();
+                get => BackColor.Alpha == 0 ? "Transparent" : ColorTranslator.ToHtml(BackColor.ToDrawingColor());
+                set => BackColor = string.Equals(value, "Transparent", StringComparison.OrdinalIgnoreCase)
+                    ? SKColors.Transparent
+                    : ColorTranslator.FromHtml(value).ToSKColor();
             }
 
             public string FontString

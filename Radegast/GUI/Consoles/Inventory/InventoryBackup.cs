@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Radegast Metaverse Client
  * Copyright(c) 2009-2014, Radegast Development Team
  * Copyright(c) 2016-2025, Sjofn, LLC
@@ -57,6 +57,11 @@ namespace Radegast
             backupTaskCancelToken = new CancellationTokenSource();
 
             GUI.GuiHelpers.ApplyGuiFixes(this);
+            Load += (s, e) =>
+            {
+                if (instance is RadegastInstanceForms rif)
+                    rif.ThemeManager?.ApplyToForm(this);
+            };
         }
 
         private void InventoryBackup_Disposed(object sender, EventArgs e)

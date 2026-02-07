@@ -97,15 +97,36 @@ namespace Radegast
         public RadegastForm(RadegastInstanceForms instance)
         {
             Instance = instance;
+            if (instance.ThemeManager != null)
+                instance.ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
             instance.OnRadegastFormCreated(this);
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(OnThemeChanged));
+                return;
+            }
+            OnThemeChanged();
+        }
+
+        /// <summary>
+        /// Override to re-apply custom styling when the user changes theme (e.g. in Settings).
+        /// DarkModeCS is already updated by ThemeManager.SetPreference; use this for form-specific colors.
+        /// </summary>
+        protected virtual void OnThemeChanged()
+        {
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (Instance?.GlobalSettings != null)
-                    Instance.GlobalSettings.OnSettingChanged -= GlobalSettings_OnSettingChanged;
+                if (Instance?.ThemeManager != null)
+                    Instance.ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
                 if (SettingsTimer != null)
                 {
                     SettingsTimer.Dispose();
@@ -185,6 +206,8 @@ namespace Radegast
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            if (Instance != null && Instance.ThemeManager != null)
+                Instance.ThemeManager.ApplyToForm(this);
             if (AutoSavePosition)
                 RestoreSavedPosition();
             InitTimer();

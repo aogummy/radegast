@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Radegast Metaverse Client
  * Copyright(c) 2022, Sjofn, LLC
  * All rights reserved.
@@ -33,6 +33,7 @@ namespace Radegast.GUI
 
             AcceptButton = btnSubmit;
             GuiHelpers.ApplyGuiFixes(this);
+            Load += (s, e) => Instance.ThemeManager?.ApplyToForm(this);
         }
 
         private void btnSubmit_Click(object sender, System.EventArgs e)
