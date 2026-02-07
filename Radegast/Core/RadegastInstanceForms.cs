@@ -163,7 +163,11 @@ namespace Radegast
             GlobalLogFile = Path.Combine(UserDir, $"{AppName}.log");
             GlobalSettings = new SettingsForms(Path.Combine(UserDir, "settings.xml"));
             frmSettings.InitSettings(GlobalSettings);
+            ThemeManager = new ThemeManager(this);
         }
+
+        /// <summary>Manages Light/Dark/System theme and applies it to forms.</summary>
+        public ThemeManager ThemeManager { get; private set; }
 
         public frmMain MainForm { get; }
         public TabsConsole TabConsole => MainForm.TabConsole;
@@ -177,6 +181,7 @@ namespace Radegast
         /// </summary>
         public void OnRadegastFormCreated(RadegastForm radForm)
         {
+            ThemeManager?.ApplyToForm(radForm);
             RadegastFormCreated?.Invoke(radForm);
         }
 

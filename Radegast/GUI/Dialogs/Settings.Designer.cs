@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Radegast Metaverse Client
 // Copyright (c) 2009-2014, Radegast Development Team
 // All rights reserved.
@@ -69,6 +69,8 @@ namespace Radegast
             this.cbTaskBarHighLight = new System.Windows.Forms.CheckBox();
             this.cbMisc = new System.Windows.Forms.GroupBox();
             this.cbResolveURIsAsPlaintext = new System.Windows.Forms.CheckBox();
+            this.lblThemeMode = new System.Windows.Forms.Label();
+            this.cmbThemeMode = new System.Windows.Forms.ComboBox();
             this.cbThemeCompatibilityMode = new System.Windows.Forms.CheckBox();
             this.cbConfirmExit = new System.Windows.Forms.CheckBox();
             this.txtResolveURITime = new System.Windows.Forms.TextBox();
@@ -144,6 +146,7 @@ namespace Radegast
             this.autoSitNameLabel = new System.Windows.Forms.Label();
             this.tbpChat = new System.Windows.Forms.TabPage();
             this.btnSave = new System.Windows.Forms.Button();
+            this.btnApplyThemeColors = new System.Windows.Forms.Button();
             this.btnResetFontSettings = new System.Windows.Forms.Button();
             this.lblPreview = new System.Windows.Forms.Label();
             this.cbxItalic = new System.Windows.Forms.CheckBox();
@@ -274,6 +277,8 @@ namespace Radegast
             // 
             // cbMisc
             // 
+            this.cbMisc.Controls.Add(this.lblThemeMode);
+            this.cbMisc.Controls.Add(this.cmbThemeMode);
             this.cbMisc.Controls.Add(this.cbResolveURIsAsPlaintext);
             this.cbMisc.Controls.Add(this.cbThemeCompatibilityMode);
             this.cbMisc.Controls.Add(this.cbConfirmExit);
@@ -296,7 +301,7 @@ namespace Radegast
             this.cbMisc.Controls.Add(this.cbSyntaxHighlight);
             this.cbMisc.Location = new System.Drawing.Point(270, 6);
             this.cbMisc.Name = "cbMisc";
-            this.cbMisc.Size = new System.Drawing.Size(244, 370);
+            this.cbMisc.Size = new System.Drawing.Size(244, 390);
             this.cbMisc.TabIndex = 2;
             this.cbMisc.TabStop = false;
             // 
@@ -310,10 +315,28 @@ namespace Radegast
             this.cbResolveURIsAsPlaintext.Text = "Resolve URIs as plain text";
             this.cbResolveURIsAsPlaintext.UseVisualStyleBackColor = true;
             // 
+            // lblThemeMode
+            // 
+            this.lblThemeMode.AutoSize = true;
+            this.lblThemeMode.Location = new System.Drawing.Point(6, 299);
+            this.lblThemeMode.Name = "lblThemeMode";
+            this.lblThemeMode.Size = new System.Drawing.Size(58, 13);
+            this.lblThemeMode.TabIndex = 24;
+            this.lblThemeMode.Text = "App theme:";
+            // 
+            // cmbThemeMode
+            // 
+            this.cmbThemeMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbThemeMode.FormattingEnabled = true;
+            this.cmbThemeMode.Location = new System.Drawing.Point(6, 315);
+            this.cmbThemeMode.Name = "cmbThemeMode";
+            this.cmbThemeMode.Size = new System.Drawing.Size(200, 21);
+            this.cmbThemeMode.TabIndex = 25;
+            // 
             // cbThemeCompatibilityMode
             // 
             this.cbThemeCompatibilityMode.AutoSize = true;
-            this.cbThemeCompatibilityMode.Location = new System.Drawing.Point(6, 321);
+            this.cbThemeCompatibilityMode.Location = new System.Drawing.Point(6, 345);
             this.cbThemeCompatibilityMode.Name = "cbThemeCompatibilityMode";
             this.cbThemeCompatibilityMode.Size = new System.Drawing.Size(150, 17);
             this.cbThemeCompatibilityMode.TabIndex = 22;
@@ -1143,6 +1166,7 @@ namespace Radegast
             // tbpChat
             // 
             this.tbpChat.Controls.Add(this.btnSave);
+            this.tbpChat.Controls.Add(this.btnApplyThemeColors);
             this.tbpChat.Controls.Add(this.btnResetFontSettings);
             this.tbpChat.Controls.Add(this.lblPreview);
             this.tbpChat.Controls.Add(this.cbxItalic);
@@ -1176,8 +1200,18 @@ namespace Radegast
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // btnApplyThemeColors
+            //
+            this.btnApplyThemeColors.Location = new System.Drawing.Point(123, 290);
+            this.btnApplyThemeColors.Name = "btnApplyThemeColors";
+            this.btnApplyThemeColors.Size = new System.Drawing.Size(120, 23);
+            this.btnApplyThemeColors.TabIndex = 19;
+            this.btnApplyThemeColors.Text = "Dark Mode Colors";
+            this.btnApplyThemeColors.UseVisualStyleBackColor = true;
+            this.btnApplyThemeColors.Click += new System.EventHandler(this.btnApplyThemeColors_Click);
+            //
             // btnResetFontSettings
-            // 
+            //
             this.btnResetFontSettings.Location = new System.Drawing.Point(11, 290);
             this.btnResetFontSettings.Name = "btnResetFontSettings";
             this.btnResetFontSettings.Size = new System.Drawing.Size(106, 23);
@@ -1463,6 +1497,7 @@ namespace Radegast
         private System.Windows.Forms.ComboBox cbxFont;
         private System.Windows.Forms.Label lblPreview;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnApplyThemeColors;
         private System.Windows.Forms.Button btnResetFontSettings;
         private System.Windows.Forms.TextBox txtChatLogDir;
         private System.Windows.Forms.Label lblChatLog;
@@ -1474,5 +1509,7 @@ namespace Radegast
         public System.Windows.Forms.CheckBox cbAllowConferenceChatsFromFriends;
         public System.Windows.Forms.CheckBox cbLogIgnoredConferencesToChat;
         private System.Windows.Forms.CheckBox cbResolveURIsAsPlaintext;
+        private System.Windows.Forms.Label lblThemeMode;
+        private System.Windows.Forms.ComboBox cmbThemeMode;
     }
 }

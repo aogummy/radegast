@@ -672,9 +672,28 @@ namespace Radegast
                 }
             }
 
-            if (!instance.GlobalSettings["theme_compatibility_mode"] && instance.PlainColors)
+            ApplyCustomThemeColors();
+        }
+
+        protected override void OnThemeChanged()
+        {
+            base.OnThemeChanged();
+            ApplyCustomThemeColors();
+        }
+
+        private void ApplyCustomThemeColors()
+        {
+            if (instance.ThemeManager.IsEffectiveDarkMode)
+            {
+                pnlDialog.BackColor = Color.FromArgb(32, 32, 32);
+            }
+            else if (!instance.GlobalSettings["theme_compatibility_mode"] && instance.PlainColors)
             {
                 pnlDialog.BackColor = Color.FromArgb(120, 220, 255);
+            }
+            else
+            {
+                pnlDialog.BackColor = SystemColors.Control;
             }
         }
         #endregion

@@ -130,6 +130,8 @@ namespace Radegast
                 instance.LogClientMessage("chat.txt", item.From + item.Text);
                 if (isNewMessage) textBuffer.Add(item);
 
+                var defaultFonts = SettingsForms.GetDefaultFontSettings(instance.ThemeManager != null && instance.ThemeManager.IsEffectiveDarkMode);
+
                 if (showTimestamps)
                 {
                     if (FontSettings.ContainsKey("Timestamp"))
@@ -140,9 +142,16 @@ namespace Radegast
                         TextPrinter.Font = fontSetting.Font;
                         TextPrinter.PrintText(item.Timestamp.ToString("[HH:mm] "));
                     }
+                    else if (defaultFonts.TryGetValue("Timestamp", out var tsDef))
+                    {
+                        TextPrinter.ForeColor = tsDef.ForeColor;
+                        TextPrinter.BackColor = tsDef.BackColor;
+                        TextPrinter.Font = tsDef.Font;
+                        TextPrinter.PrintText(item.Timestamp.ToString("[HH:mm] "));
+                    }
                     else
                     {
-                        TextPrinter.ForeColor = SystemColors.GrayText.ToSKColor();
+                        TextPrinter.ForeColor = System.Drawing.SystemColors.GrayText.ToSKColor();
                         TextPrinter.BackColor = SKColors.Transparent;
                         TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                         TextPrinter.PrintText(item.Timestamp.ToString("[HH:mm] "));
@@ -156,9 +165,15 @@ namespace Radegast
                     TextPrinter.BackColor = fontSetting.BackColor;
                     TextPrinter.Font = fontSetting.Font;
                 }
+                else if (defaultFonts.TryGetValue("Name", out var nameDef))
+                {
+                    TextPrinter.ForeColor = nameDef.ForeColor;
+                    TextPrinter.BackColor = nameDef.BackColor;
+                    TextPrinter.Font = nameDef.Font;
+                }
                 else
                 {
-                    TextPrinter.ForeColor = SystemColors.WindowText.ToSKColor();
+                    TextPrinter.ForeColor = System.Drawing.SystemColors.WindowText.ToSKColor();
                     TextPrinter.BackColor = SKColors.Transparent;
                     TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                 }
@@ -179,9 +194,15 @@ namespace Radegast
                     TextPrinter.BackColor = fontSetting.BackColor;
                     TextPrinter.Font = fontSetting.Font;
                 }
+                else if (defaultFonts.TryGetValue(item.Style.ToString(), out var styleDef))
+                {
+                    TextPrinter.ForeColor = styleDef.ForeColor;
+                    TextPrinter.BackColor = styleDef.BackColor;
+                    TextPrinter.Font = styleDef.Font;
+                }
                 else
                 {
-                    TextPrinter.ForeColor = SystemColors.WindowText.ToSKColor();
+                    TextPrinter.ForeColor = System.Drawing.SystemColors.WindowText.ToSKColor();
                     TextPrinter.BackColor = SKColors.Transparent;
                     TextPrinter.Font = SettingsForms.FontSetting.DefaultFont;
                 }

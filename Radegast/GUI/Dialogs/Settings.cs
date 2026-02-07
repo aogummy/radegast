@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Radegast Metaverse Client
  * Copyright(c) 2009-2014, Radegast Development Team
  * Copyright(c) 2016-20253, Sjofn, LLC
@@ -143,6 +143,8 @@ namespace Radegast
             {
                 s["chat_log_dir"] = OSD.FromString("");
             }
+
+            if (!s.ContainsKey("theme_mode")) s["theme_mode"] = (int)ThemePreference.System;
         }
 
         private void InitColorSettings()
@@ -183,13 +185,16 @@ namespace Radegast
         {
             lbxColorItems.Items.Clear();
 
+            bool isDarkMode = Instance.ThemeManager != null && Instance.ThemeManager.IsEffectiveDarkMode;
+            var currentDefaults = SettingsForms.GetDefaultFontSettings(isDarkMode);
+
             var chatFontsJson = Instance.GlobalSettings["chat_fonts"];
             if (chatFontsJson.Type != OSDType.Unknown)
             {
                 Dictionary<string, SettingsForms.FontSetting> unpacked = new Dictionary<string, SettingsForms.FontSetting>();
                 chatFontSettings = JsonConvert.DeserializeObject<Dictionary<string, SettingsForms.FontSetting>>(chatFontsJson);
 
-                foreach (var fontSetting in SettingsForms.DefaultFontSettings)
+                foreach (var fontSetting in currentDefaults)
                 {
                     if (!chatFontSettings.ContainsKey(fontSetting.Key))
                     {
@@ -199,7 +204,7 @@ namespace Radegast
             }
             else
             {
-                chatFontSettings = SettingsForms.DefaultFontSettings;
+                chatFontSettings = new Dictionary<string, SettingsForms.FontSetting>(currentDefaults);
             }
 
             foreach (var item in chatFontSettings)
@@ -210,6 +215,50 @@ namespace Radegast
             if (chatFontSettings.Count > 0)
             {
                 lbxColorItems.SetSelected(0, true);
+            }
+
+            UpdateApplyThemeColorsButtonText();
+        }
+
+        private static bool FontSettingMatches(SettingsForms.FontSetting a, SettingsForms.FontSetting b)
+        {
+            if (a == null || b == null) return a == b;
+            if (a.ForeColor != b.ForeColor || a.BackColor != b.BackColor) return false;
+            return (a.Font == null && b.Font == null) || (a.Font != null && b.Font != null && a.Font.Equals(b.Font));
+        }
+
+        private bool ChatFontSettingsMatchDefaults(Dictionary<string, SettingsForms.FontSetting> defaults)
+        {
+            if (chatFontSettings == null || defaults == null) return false;
+            foreach (var kv in defaults)
+            {
+                if (!chatFontSettings.TryGetValue(kv.Key, out var current) || !FontSettingMatches(current, kv.Value))
+                    return false;
+            }
+            return true;
+        }
+
+        private void UpdateApplyThemeColorsButtonText()
+        {
+            if (btnApplyThemeColors == null) return;
+            bool matchesDark = ChatFontSettingsMatchDefaults(SettingsForms.DefaultDarkFontSettings);
+            btnApplyThemeColors.Text = matchesDark ? "Light Mode Colors" : "Dark Mode Colors";
+        }
+
+        private void btnApplyThemeColors_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bool applyDark = (btnApplyThemeColors?.Text == "Dark Mode Colors");
+                var defaults = SettingsForms.GetDefaultFontSettings(applyDark);
+                var json = JsonConvert.SerializeObject(defaults);
+                Instance.GlobalSettings["chat_fonts"] = json;
+                Instance.GlobalSettings.Save();
+                ReloadFontSettings();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to apply theme colors: " + ex.Message);
             }
         }
 
@@ -347,6 +396,18 @@ namespace Radegast
             cbConfirmExit.CheckedChanged += (sender, e) =>
             {
                 settings["confirm_exit"] = cbConfirmExit.Checked;
+            };
+
+            cmbThemeMode.Items.Clear();
+            cmbThemeMode.Items.Add("Light");
+            cmbThemeMode.Items.Add("Dark");
+            cmbThemeMode.Items.Add("System (follow Windows)");
+            var themePref = settings.ContainsKey("theme_mode") ? (ThemePreference)settings["theme_mode"].AsInteger() : ThemePreference.System;
+            cmbThemeMode.SelectedIndex = (int)themePref;
+            cmbThemeMode.SelectedIndexChanged += (sender, e) =>
+            {
+                if (cmbThemeMode.SelectedIndex < 0) return;
+                Instance.ThemeManager.SetPreference((ThemePreference)cmbThemeMode.SelectedIndex);
             };
 
             cbThemeCompatibilityMode.Checked = settings["theme_compatibility_mode"];
@@ -1001,7 +1062,9 @@ namespace Radegast
         {
             try
             {
-                var json = JsonConvert.SerializeObject(SettingsForms.DefaultFontSettings);
+                bool isDarkMode = Instance.ThemeManager != null && Instance.ThemeManager.IsEffectiveDarkMode;
+                var defaults = SettingsForms.GetDefaultFontSettings(isDarkMode);
+                var json = JsonConvert.SerializeObject(defaults);
                 Instance.GlobalSettings["chat_fonts"] = json;
                 Instance.GlobalSettings.Save();
                 ReloadFontSettings();

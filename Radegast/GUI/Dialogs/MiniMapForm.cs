@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Radegast Metaverse Client
  * Copyright(c) 2016-2025, Sjofn, LLC
  * All rights reserved.
@@ -19,6 +19,7 @@
 
 using OpenMetaverse;
 using System.Windows.Forms;
+using Radegast;
 
 namespace Radegast.GUI.Dialogs
 {
@@ -32,6 +33,11 @@ namespace Radegast.GUI.Dialogs
         {
             InitializeComponent();
             miniMap1.Client = client;
+            Load += (s, e) =>
+            {
+                if (RadegastInstanceForms.Initialized)
+                    RadegastInstanceForms.Instance.ThemeManager?.ApplyToForm(this);
+            };
         }
     }
 }
