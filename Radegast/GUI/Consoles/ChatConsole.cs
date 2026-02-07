@@ -559,6 +559,17 @@ namespace Radegast
                         type = ChatType.Normal;
                     }
 
+                    
+                                        // Route channel-0 chat/emote to RLV redirect channel when @redirchat / @rediremote is active
+                    if (ch == 0)
+                    {
+                        var isEmote = msg.StartsWith("/me ", StringComparison.OrdinalIgnoreCase);
+                        if (isEmote && instance.RLV.Permissions.TryGetRedirEmoteChannels(out var emoteChannels) && emoteChannels?.Count > 0)
+                            ch = (int)emoteChannels[0];
+                        else if (!isEmote && instance.RLV.Permissions.TryGetRedirChatChannels(out var chatChannels) && chatChannels?.Count > 0)
+                            ch = (int)chatChannels[0];
+                    }
+
                     if (ch == 0 && !instance.RLV.Permissions.CanSendChat())
                     {
                         var hasValidCharacters = input.IndexOfAny(InvalidRlvEmoteCharacters) == -1;
